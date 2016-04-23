@@ -286,8 +286,8 @@ void main () {
   vec4 originalPixel = texture2D(tDiffuse, vUv);
   vec4 ssrPixel = texture2D(tDiffuse, hitPixel);
   
-  gl_FragColor = vec4(vec3(intersect ? 1.0 : 0.0), 1.0);
-  // gl_FragColor.rgb = ssrPixel.rgb;
+  gl_FragColor = originalPixel;
+  gl_FragColor.rgb = ssrPixel.rgb;
   // gl_FragColor = vec4((ssrPixel.rgb * ssrPixel.a) + (originalPixel.rgb * (1.0 - ssrPixel.a)), 1.0);
   // gl_FragColor = mix(gl_FragColor, originalPixel, 1.0 - alpha);
   // gl_FragColor = vec4(vec3(decodedDepth), 1.0);
