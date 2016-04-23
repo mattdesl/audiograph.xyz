@@ -1,3 +1,4 @@
+
 uniform sampler2D tDiffuse;
 uniform sampler2D tDepth;
 uniform sampler2D gBufferNormalRoughness;
@@ -16,6 +17,9 @@ varying vec2 vOneDividedByRenderBufferSize; // Optimization: removes 2 divisions
 // By Morgan McGuire and Michael Mara at Williams College 2014
 // Released as open source under the BSD 2-Clause License
 // http://opensource.org/licenses/BSD-2-Clause
+
+// More references:
+// http://g3d.cs.williams.edu/websvn/filedetails.php?repname=g3d&path=%2FG3D10%2Fdata-files%2Fshader%2FscreenSpaceRayTrace.glsl&peg=5
 
 uniform mat4 projectionMatrix;           // projection matrix that maps to screen pixels (not NDC)
 const float iterations = 15.0;                          // maximum ray iterations
@@ -53,7 +57,7 @@ float fetchLinearDepth (vec2 depthUV) {
     float cameraFarPlusNear = cameraFar + cameraNear;
     float cameraFarMinusNear = cameraFar - cameraNear;
     float cameraCoef = 2.0 * cameraNear;
-    return (cameraCoef / (cameraFarPlusNear - texture2D( tDepth, depthUV ).x * cameraFarMinusNear));
+    return cameraCoef / (cameraFarPlusNear - texture2D( tDepth, depthUV ).x * cameraFarMinusNear);
 }
 
 bool rayIntersectsDepthBuffer (float minZ, float maxZ, vec2 depthUV) {
@@ -165,7 +169,8 @@ bool traceScreenSpaceRay( vec3 rayOrigin,
         
         hitPixel = permute ? pqk.yx : pqk.xy;
         hitPixel *= vOneDividedByRenderBufferSize;
-        
+        // hitPixel.y = 1.0 - hitPixel.y;
+
         intersect = rayIntersectsDepthBuffer(zA, zB, hitPixel);
         numIterations += 1.0;
         if (intersect == true) break;
@@ -281,11 +286,11 @@ void main () {
   vec4 originalPixel = texture2D(tDiffuse, vUv);
   vec4 ssrPixel = texture2D(tDiffuse, hitPixel);
   
-  // gl_FragColor = originalPixel;
+  gl_FragColor = vec4(vec3(intersect ? 1.0 : 0.0), 1.0);
   // gl_FragColor.rgb = ssrPixel.rgb;
-  gl_FragColor = vec4((ssrPixel.rgb * ssrPixel.a) + (originalPixel.rgb * (1.0 - ssrPixel.a)), 1.0);
+  // gl_FragColor = vec4((ssrPixel.rgb * ssrPixel.a) + (originalPixel.rgb * (1.0 - ssrPixel.a)), 1.0);
   // gl_FragColor = mix(gl_FragColor, originalPixel, 1.0 - alpha);
-  gl_FragColor = vec4(vec3(debug), 1.0);
+  // gl_FragColor = vec4(vec3(decodedDepth), 1.0);
   
   // float depth = 1.0 - clamp((1.0 - readDepth()), 0.0, 1.0) * depthRatio;
   // gl_FragColor = applyFog(readDepth());

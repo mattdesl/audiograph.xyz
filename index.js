@@ -80,7 +80,7 @@ rtDepth.type = THREE.FloatType;
 
 
 const depthMaterial = new THREE.MeshDepthMaterial();
-// depthMaterial.depthPacking = THREE.RGBADepthPacking;
+depthMaterial.depthPacking = THREE.BasicDepthPacking;
 depthMaterial.blending = THREE.NoBlending;
 
 composer.addPass(new EffectComposer.RenderPass(scene, camera));
@@ -158,7 +158,6 @@ function render (dt) {
   
   renderer.setClearColor('#000', 1);
   scene.overrideMaterial = null;
-  composer.depthTexture = rtDepth;
   composer.render();
 }
 
@@ -179,18 +178,20 @@ function setupScene (envMap) {
   const normalMap = createTexture('assets/textures/pattern_143/normal.png', repeats);
   const specularMap = createTexture('assets/textures/pattern_143/specular.png', repeats);
 
-  const skybox = new THREE.Mesh(new THREE.SphereGeometry(1000, 32, 32), new THREE.MeshBasicMaterial({
-    color: 'red' 
+  const skybox = new THREE.Mesh(new THREE.SphereGeometry(100, 32, 32), new THREE.MeshBasicMaterial({
+    map: new THREE.TextureLoader().load('assets/Barce_Rooftop_C_8k.jpg'),
+    side: THREE.BackSide,
+    fog: false
   }));
   scene.add(skybox);
 
-  const floorGeom = new THREE.PlaneGeometry(100,100,100);
-  // const floorGeom = new THREE.CircleGeometry(200, 64);
+  // const floorGeom = new THREE.PlaneGeometry(100,100,100);
+  const floorGeom = new THREE.CircleGeometry(200, 64);
   floorGeom.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI / 2));
   const floorMaterial = createPBRMaterial({
-    // envMap,
-    // normalMap,
-    // specularMap,
+    envMap,
+    normalMap,
+    specularMap,
     normalScale: new THREE.Vector2(-0.5, -0.5),
     map,
     roughness: 0.65,
@@ -206,7 +207,7 @@ function setupScene (envMap) {
     envMap,
     metalness: 1,
   }));
-  // ball.position.x = 10;
+  ball.position.x = 10;
   ball.position.y = 1.5;
   ball.scale.multiplyScalar(2);
   scene.add(ball);
@@ -219,8 +220,8 @@ function setupScene (envMap) {
   new THREE.JSONLoader().load('assets/pyramid.json', (geometry) => {
     mesh = new THREE.Mesh(geometry, material);
     mesh.scale.multiplyScalar(3);
-    // scene.add(mesh);
-    // mesh.castShadow = true;
-    // mesh.position.y = 1;
+    scene.add(mesh);
+    mesh.castShadow = true;
+    mesh.position.y = 1;
   }, (err) => console.error(err));
 }
