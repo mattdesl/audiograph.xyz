@@ -1,0 +1,165 @@
+
+@font-face {
+  font-family: 'Pier';
+  src: url('./fonts/pier-regular.otf');
+}
+
+@font-face {
+  font-family: 'PierBold';
+  src: url('./fonts/pier-bold.otf');
+}
+
+@font-face {
+  font-family: 'NotoSans';
+  src: url('./fonts/NotoSans-Regular.ttf');
+}
+@font-face {
+  font-family: 'NotoSansBold';
+  src: url('./fonts/NotoSans-Bold.ttf');
+}
+@font-face {
+  font-family: 'NotoSansItalic';
+  src: url('./fonts/NotoSans-Italic.ttf');
+}
+
+body {
+  margin: 0;
+  background: #fff;
+  color: black;
+  overflow: hidden;
+  font-family: 'NotoSans', 'Helvetica', sans-serif;
+  font-size: 14px;
+}
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: none;
+}
+
+p {
+  line-height: 10px;
+}
+
+strong {
+  font-size: 12px;
+  font-variant: normal;
+  font-family: 'NotoSansItalic';
+  font-style: normal;
+}
+
+#intro {
+  position: absolute;
+  display: table;
+  top: 0;
+  left: 0;
+  margin: auto;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+}
+
+#intro-card {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+#hero-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+}
+
+.header-container {
+  position: absolute;
+  top: 20px;
+  margin: auto;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.header {
+  font-family: 'PierBold';
+  font-size: 70px;
+  letter-spacing: -2px;
+  text-transform: uppercase;
+  line-height: 100px;
+}
+
+.subheader {
+  font-family: 'Pier';
+  width: 100%;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: initial;
+  margin: 0;
+  padding: 0;
+  opacity: 0.5;
+  margin-top: -20px;
+}
+
+.logo-container {
+  position: absolute;
+  bottom: 20px;
+  margin: auto;
+  width: 100%;
+}
+
+.logo {
+  /*position: relative;*/
+  width: 50px;
+  height: 50px;
+  display: inline-block;
+  background-repeat: none;
+  background-size: 50px 50px;
+  background-image: url('./svg/dolby.svg');
+}
+
+.track {
+  display: none;
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+}
+
+.volume-icon {
+  width: 50px;
+  height: 50px;
+  display: inline-block;
+  background-repeat: none;
+  background-size: 50px 50px;
+  background-image: url('./svg/headphones.svg');
+  -webkit-animation: flickerAnimation 1.5s infinite;
+  -moz-animation: flickerAnimation 1.5s infinite;
+  -o-animation: flickerAnimation 1.5s infinite;
+  animation: flickerAnimation 1.5s infinite;
+}
+
+.intro-1, .intro-2, .intro-3 {
+  display: none;
+}
+
+@keyframes flickerAnimation {
+  0%   { transform: scale(1.0); }
+  10%  { transform: scale(0.85); }
+  100% { transform: scale(1.0); }
+}
+@-o-keyframes flickerAnimation{
+  0%   { transform: scale(1.0); }
+  10%  { transform: scale(0.85); }
+  100% { transform: scale(1.0); }
+}
+@-moz-keyframes flickerAnimation{
+  0%   { transform: scale(1.0); }
+  10%  { transform: scale(0.85); }
+  100% { transform: scale(1.0); }
+}
+@-webkit-keyframes flickerAnimation{
+  0%   { transform: scale(1.0); }
+  10%  { transform: scale(0.85); }
+  100% { transform: scale(1.0); }
+}

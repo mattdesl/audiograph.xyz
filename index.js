@@ -1,66 +1,32 @@
+require('babel-polyfill');
 const createLoop = require('raf-loop');
 const createApp = require('./lib/app');
 const newArray = require('new-array');
-const createGeometry = require('./lib/geometry');
-const createLine3D = require('./lib/createLine3D');
-const glslify = require('glslify');
-const fs = require('fs');
 const geoScene = require('./lib/geoScene');
 const getPalette = require('./lib/palette');
 const setupInteractions = require('./lib/setupInteractions');
 
+const showIntro = require('./lib/intro');
 const EffectComposer = require('./lib/EffectComposer');
-const CopyShader = require('three-copyshader');
-const FogPass = require('./lib/FogPass');
-const GodRayPass = require('./lib/GodRayPass');
 const BloomPass = require('./lib/BloomPass');
 const SSAOShader = require('./lib/shader/SSAOShader');
 const createAudio = require('./lib/audio');
 
 const white = new THREE.Color('white');
-const opt = { antialias: true };
-const {updateProjectionMatrix, camera, scene, renderer, controls, canvas} = createApp(opt);
+const opt = { antialias: false, alpha: false, stencil: false };
+const { updateProjectionMatrix, camera, scene, renderer, controls, canvas } = createApp(opt);
 
-var genCubeUrls = function (prefix, postfix) {
-  return [
-    prefix + 'px' + postfix, prefix + 'nx' + postfix,
-    prefix + 'py' + postfix, prefix + 'ny' + postfix,
-    prefix + 'pz' + postfix, prefix + 'nz' + postfix
-  ];
-};
-
-let hdrUrls = genCubeUrls('assets/pisaHDR/', '.hdr');
-let cubeLoader = new THREE.HDRCubeTextureLoader();
-cubeLoader.load(THREE.UnsignedByteType, hdrUrls, function (hdrCubeMap) {
-  const pmremGenerator = new THREE.PMREMGenerator(hdrCubeMap);
-  pmremGenerator.update(renderer);
-
-  const pmremCubeUVPacker = new THREE.PMREMCubeUVPacker(pmremGenerator.cubeLods);
-  pmremCubeUVPacker.update(renderer);
-
-  // const envMap = pmremGenerator.cubeLods[3];
-  const envMap = pmremGenerator.cubeLods[ pmremGenerator.cubeLods.length - 4 ];
-  
-  getPalette(palettes => {
-    setupScene({ palettes, envMap });
-  });
-});
-
-scene.add(new THREE.AmbientLight('#020102'));
+// scene.add(new THREE.AmbientLight('#020102'));
 // const dir = new THREE.DirectionalLight('#fff', 1);
 // dir.position.set(0, 0, 0);
 // scene.add(dir);
-
-var hemi = new THREE.HemisphereLight('#fff', '#adadad', 1);
-scene.add(hemi);
+// var hemi = new THREE.HemisphereLight('#fff', '#adadad', 1);
+// scene.add(hemi);
 
 var floatDepth = false;
 renderer.gammaInput = true;
 renderer.gammaOutput = true;
 renderer.gammaFactor = 2.2;
-
-// renderer.shadowMap.enabled = true;
-// renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 const rt1 = createRenderTarget();
 const rt2 = createRenderTarget();
@@ -82,9 +48,18 @@ const depthMaterial = new THREE.MeshDepthMaterial();
 depthMaterial.depthPacking = THREE.BasicDepthPacking;
 depthMaterial.blending = THREE.NoBlending;
 
+let time = 0;
+let mesh = null;
+
+const loop = createLoop(render).start();
+resize();
+window.addEventListener('resize', resize);
+setupPost();
+setupScene({ palettes: getPalette() });
+
 function setupPost () {
   composer.addPass(new EffectComposer.RenderPass(scene, camera));
-  
+
   var pass = new EffectComposer.ShaderPass(SSAOShader);
   composer.addPass(pass);
   pass.uniforms.tDepth.value = depthTarget;
@@ -97,7 +72,7 @@ function setupPost () {
 
 function createRenderTarget (numAttachments) {
   numAttachments = numAttachments || 0;
-  const target = numAttachments > 1 
+  const target = numAttachments > 1
     ? new THREE.WebGLMultiRenderTarget(window.innerWidth, window.innerHeight)
     : new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
   target.texture.format = THREE.RGBFormat;
@@ -114,14 +89,6 @@ function createRenderTarget (numAttachments) {
   }
   return target;
 }
-
-let time = 0;
-let mesh = null;
-
-const loop = createLoop(render).start();
-resize();
-window.addEventListener('resize', resize);
-setupPost();
 
 function resize () {
   const dpr = renderer.getPixelRatio();
@@ -143,7 +110,6 @@ function render (dt) {
   updateProjectionMatrix();
 
   const oldClear = renderer.getClearColor();
-  
   if (floatDepth) {
     scene.overrideMaterial = depthMaterial;
     renderer.setRenderTarget(rtDepth);
@@ -151,13 +117,13 @@ function render (dt) {
     renderer.clear(true, true, true);
     renderer.render(scene, camera, rtDepth);
   }
-  
+
   composer.passes.forEach(pass => {
     if (pass.uniforms && pass.uniforms.resolution) {
       pass.uniforms.resolution.value.set(rtInitial.width, rtInitial.height);
     }
   });
-  
+
   renderer.setRenderTarget(null);
   renderer.setClearColor(oldClear, 1);
   scene.overrideMaterial = null;
@@ -166,26 +132,34 @@ function render (dt) {
 }
 
 function setupScene ({ palettes, envMap }) {
+  document.querySelector('#canvas').style.display = 'block';
+
   console.log('Total palettes', palettes.length);
-  const whitePalette = [ '#fff', '#d3d3d3', '#a5a5a5' ];
   const geo = geoScene({ palettes, scene, envMap, loop, camera, renderer });
-  geo.setPalette(whitePalette);
+  
+  const initialPalette = [ '#fff', '#e2e2e2' ];
+  geo.setPalette(initialPalette);
 
   const audio = createAudio();
-  
   let started = false;
   let time = 0;
   let switchPalettes = false;
   let readyForGeometry = newArray(audio.binCount, true);
   let readyForPaletteChange = false;
 
+  const whitePalette = [ '#fff', '#d3d3d3', '#a5a5a5' ];
   const interactions = setupInteractions({ whitePalette, scene, controls, audio, camera, geo });
-
+  const introAutoGeo = setInterval(() => {
+    geo.nextGeometry();
+  }, 400);
+  audio.queue();
   audio.once('ready', () => {
+    audio.playQueued();
+  });
+  showIntro({ interactions }, () => {
+    setTimeout(() => switchPalettes = true, 1500);
     started = true;
-    switchPalettes = true;
-    audio.play();
-    geo.nextPalette();
+    clearInterval(introAutoGeo);
   });
 
   setInterval(() => {
@@ -198,23 +172,19 @@ function setupScene ({ palettes, envMap }) {
     readyForPaletteChange = true;
   }, 500);
 
-  // setInterval(() => {
-  //   geo.nextColor();
-  // }, 2000);
-
   loop.on('tick', dt => {
     time += dt;
     if (!started) return;
 
     audio.update(dt);
 
-    for (let i = 0; i < audio.detection.length; i++) {
-      if (readyForGeometry[i] && audio.detection[i]) {
+    for (let i = 0; i < audio.beats.length; i++) {
+      if (readyForGeometry[i] && audio.beats[i]) {
         geo.nextGeometry({ type: i });
         readyForGeometry[i] = false;
       }
     }
-    if (!interactions.keyDown && readyForPaletteChange && audio.detection[1] && switchPalettes) {
+    if (!interactions.keyDown && readyForPaletteChange && audio.beats[1] && switchPalettes) {
       geo.nextPalette();
       readyForPaletteChange = false;
     }

@@ -4,23 +4,34 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, shrink-to-fit=0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
   <title>color</title>
-  <style>
-  body {
-    margin: 0;
-    overflow: hidden;
-  }
-  </style>
+  <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
+  <canvas id="canvas"></canvas>
+  <div id="intro"> 
+    <div id="intro-card">
+      <div class="intro-1">
+        <p class="volume-icon"></p>
+        <p>Turn up your volume!</p>
+        <!-- <p><strong>Turn up your volume!</strong></p> -->
+      </div>
+      <div class="intro-2">
+        <p>Hold Spacebar to load a new track.</p>
+      </div>
+      <div class="intro-3">
+        <p>Release Spacebar to play.</p>
+      </div>
+    </div>
+  </div>
+  <div id="hero-card">
+    <div class="header-container">
+      <div class="header">TITLE</div>
+      <div class="subheader">a music visualizer</div>      
+    </div>
+    <div class="track">1 / 4</div>
+    <div class="logo-container"><div class="logo"></div></div>
+  </div>
   <script src="vendor/three.js"></script>
-  <script src="vendor/RGBELoader.js"></script>
-  <script src="vendor/HDRCubeTextureLoader.js"></script>
-
-  <script src="vendor/Half.js"></script>
-  <script src="vendor/Encodings.js"></script>
-  <script src="vendor/PMREMGenerator.js"></script>
-  <script src="vendor/PMREMCubeUVPacker.js"></script>
-
   <script src="bundle.js"></script>
 </body>
 </html>
