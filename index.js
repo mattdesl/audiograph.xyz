@@ -167,8 +167,9 @@ function render (dt) {
 
 function setupScene ({ palettes, envMap }) {
   console.log('Total palettes', palettes.length);
+  const whitePalette = [ '#fff', '#d3d3d3', '#a5a5a5' ];
   const geo = geoScene({ palettes, scene, envMap, loop, camera, renderer });
-  geo.setPalette([ '#fff', '#c1c1c1', '#606060', '#353535' ]);
+  geo.setPalette(whitePalette);
 
   const audio = createAudio();
   
@@ -178,7 +179,7 @@ function setupScene ({ palettes, envMap }) {
   let readyForGeometry = newArray(audio.binCount, true);
   let readyForPaletteChange = false;
 
-  const interactions = setupInteractions({ scene, controls, audio, camera, geo });
+  const interactions = setupInteractions({ whitePalette, scene, controls, audio, camera, geo });
 
   audio.once('ready', () => {
     started = true;
