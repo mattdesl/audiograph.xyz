@@ -14,6 +14,29 @@
 - intro text
   "Turn up your volume!"
   "A visual exploration of Moderat's 2010 album, II"
+- space bar UI
+- dolby digital plus
+- support safari
+
+chromatune
+BDKNG
+chromasound
+audiopop
+chromabop
+chromabeat
+inksound
+dampener
+reverbs.xyz
+audiograph
+chromatik
+audiodot
+chroma
+chromas
+audiofloat
+audiodrift
+chromaflow
+vinyl
+
 
 ## Usage
 

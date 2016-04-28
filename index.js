@@ -136,7 +136,7 @@ function setupScene ({ palettes, envMap }) {
 
   console.log('Total palettes', palettes.length);
   const geo = geoScene({ palettes, scene, envMap, loop, camera, renderer });
-  
+
   const initialPalette = [ '#fff', '#e2e2e2' ];
   geo.setPalette(initialPalette);
 
@@ -186,7 +186,6 @@ function setupScene ({ palettes, envMap }) {
       }
     }
     if (!interactions.keyDown && readyForPaletteChange && audio.beats[1] && switchPalettes) {
-      console.log("NEXT")
       geo.nextPalette();
       readyForPaletteChange = false;
     }
