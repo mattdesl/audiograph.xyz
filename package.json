@@ -32,6 +32,8 @@
     "glsl-noise": "0.0.0",
     "glslify": "^5.0.2",
     "hex-rgb": "^1.0.0",
+    "index-of-array": "^1.0.0",
+    "keycode": "^2.1.1",
     "new-array": "^1.0.0",
     "object-assign": "^4.0.1",
     "orbit-controls": "^1.0.4",

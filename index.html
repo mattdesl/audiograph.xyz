@@ -8,29 +8,38 @@
 </head>
 <body>
   <canvas id="canvas"></canvas>
+  <div id="hero-card" class="noselect">
+    <div class="header-aligner">
+      <div class="header-container">
+        <div class="header">TONEALITY</div>
+        <div class="subheader">A visual exploration of Moderat's 2010 album, <em>II</em></div>      
+      </div>
+    </div>
+  </div>  
   <div id="intro"> 
     <div id="intro-card">
       <div class="intro-1">
         <p class="volume-icon"></p>
         <p>Turn up your volume!</p>
-        <!-- <p><strong>Turn up your volume!</strong></p> -->
       </div>
       <div class="intro-2">
-        <p>Hold Spacebar to load a new track.</p>
+        <p>Hold <span class="spacebar">spacebar</span> to load a new track.</p>
+        <!-- <p class="subtext">Now Playing: <strong>Mark (Interlude)</strong></p> -->
       </div>
       <div class="intro-3">
-        <p>Release Spacebar to play.</p>
+        <p>Release <span class="spacebar">spacebar</span> to play.</p>
       </div>
     </div>
   </div>
-  <div id="hero-card">
-    <div class="header-container">
-      <div class="header">TITLE</div>
-      <div class="subheader">a music visualizer</div>      
+  
+  <div class="track-aligner">
+    <div class="track-container">
+      <div class="track-number">2</div>
+      <div class="track-name">Bad Kingdom</div>
     </div>
-    <div class="track">1 / 4</div>
-    <div class="logo-container"><div class="logo"></div></div>
   </div>
+  
+  <div class="logo-container"><div class="logo"></div></div>
   <script src="vendor/three.js"></script>
   <script src="bundle.js"></script>
 </body>

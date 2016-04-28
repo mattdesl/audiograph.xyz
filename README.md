@@ -3,6 +3,17 @@
 [![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges)
 
 
+- name
+- domain name
+- hosting
+- show track name
+- frequencies for each song
+- one more frequency band feature ? 
+- mouse interactions
+- good first few colors
+- intro text
+  "Turn up your volume!"
+  "A visual exploration of Moderat's 2010 album, II"
 
 ## Usage
 

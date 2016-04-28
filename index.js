@@ -145,10 +145,11 @@ function setupScene ({ palettes, envMap }) {
   let time = 0;
   let switchPalettes = false;
   let readyForGeometry = newArray(audio.binCount, true);
-  let readyForPaletteChange = false;
+  let readyForPaletteChange = true;
 
   const whitePalette = [ '#fff', '#d3d3d3', '#a5a5a5' ];
   const interactions = setupInteractions({ whitePalette, scene, controls, audio, camera, geo });
+
   const introAutoGeo = setInterval(() => {
     geo.nextGeometry();
   }, 400);
@@ -170,7 +171,7 @@ function setupScene ({ palettes, envMap }) {
 
   setInterval(() => {
     readyForPaletteChange = true;
-  }, 500);
+  }, 2000);
 
   loop.on('tick', dt => {
     time += dt;
@@ -185,6 +186,7 @@ function setupScene ({ palettes, envMap }) {
       }
     }
     if (!interactions.keyDown && readyForPaletteChange && audio.beats[1] && switchPalettes) {
+      console.log("NEXT")
       geo.nextPalette();
       readyForPaletteChange = false;
     }
