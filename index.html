@@ -3,28 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, shrink-to-fit=0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-  <title>color</title>
+  <title>Audiograph</title>
   <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
   <canvas id="canvas"></canvas>
-  <div id="hero-card" class="noselect">
-    <div class="header-aligner">
-      <div class="header-container">
-        <div class="header">audiograph</div>
-        <div class="subheader">A visual exploration of Moderat's 2010 album, <em>II</em></div>      
-      </div>
+  <div id="hero-card" class="disable-pointer">
+    <div class="header-container">
+      <div class="header">audiograph</div>
+      <div class="subheader">A visual exploration of Moderat's 2010 album, <em>II</em></div>
     </div>
   </div>  
-  <div id="intro"> 
+  <div id="intro" class="disable-pointer">
     <div id="intro-card">
-      <div class="intro-1">
+      <div class="intro-1a">
         <p class="volume-icon"></p>
         <p>Turn up your volume!</p>
       </div>
+      <div class="intro-1b">
+        <p class="song-icon"></p>
+        <p>Now playing <span class="track-name-hint">The Mark (Interlude)</span></p>
+      </div>
       <div class="intro-2">
         <p>Hold <span class="spacebar">spacebar</span> to load a new track.</p>
-        <!-- <p class="subtext">Now Playing: <strong>Mark (Interlude)</strong></p> -->
       </div>
       <div class="intro-3">
         <p>Release <span class="spacebar">spacebar</span> to play.</p>
@@ -40,7 +41,7 @@
   </div>
   
   <div class="logo-container"><div class="logo"></div></div>
-  <script src="vendor/three.js"></script>
-  <script src="bundle.js"></script>
+  <script src="vendor/three.min.js" defer></script>
+  <script src="bundle.js" defer></script>
 </body>
 </html>

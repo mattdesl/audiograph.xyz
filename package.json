@@ -30,10 +30,13 @@
     "glsl-inject-defines": "^1.0.3",
     "glsl-luma": "^1.0.1",
     "glsl-noise": "0.0.0",
+    "glsl-random": "0.0.5",
     "glslify": "^5.0.2",
     "hex-rgb": "^1.0.0",
     "index-of-array": "^1.0.0",
+    "ios-safe-audio-context": "^1.0.1",
     "keycode": "^2.1.1",
+    "lerp": "^1.0.3",
     "new-array": "^1.0.0",
     "object-assign": "^4.0.1",
     "orbit-controls": "^1.0.4",
@@ -63,7 +66,8 @@
   "scripts": {
     "test": "node test.js",
     "start": "budo index.js:bundle.js --live -- -t babelify -t glslify -t brfs -t [ installify --save ]",
-    "build": "browserify index.js -t babelify -t glslify -t brfs | uglifyjs -m -c warnings=false > bundle.js"
+    "build": "browserify index.js -t babelify -t glslify -t brfs | uglifyjs -m -c warnings=false > bundle.js",
+    "deploy": "surge"
   },
   "keywords": [],
   "repository": {

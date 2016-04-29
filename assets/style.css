@@ -7,7 +7,6 @@
   font-family: 'PierBold';
   src: url('./fonts/pier-bold.otf');
 }
-
 @font-face {
   font-family: 'NotoSans';
   src: url('./fonts/NotoSans-Regular.ttf');
@@ -16,11 +15,10 @@
   font-family: 'NotoSansBold';
   src: url('./fonts/NotoSans-Bold.ttf');
 }
-@font-face {
+/*@font-face {
   font-family: 'NotoSansItalic';
   src: url('./fonts/NotoSans-Italic.ttf');
-}
-
+}*/
 body {
   margin: 0;
   background: #fff;
@@ -74,8 +72,15 @@ strong {
 }
 
 .header-container {
-  display: table-cell;
-  vertical-align: middle;
+  display: block;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  -o-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
 }
 
 .header {
@@ -158,19 +163,37 @@ strong {
   line-height: 60px;
 }
 
-.volume-icon {
+.track-name-hint {
+  font-family: 'PierBold';
+  display: block;
+  position: relative;
+  top: 12px;
+  /*padding-top: 20px;*/
+  /*line-height: 32px;*/
+  font-size: 14px;
+  text-transform: uppercase;
+  /*le*/
+}
+
+.volume-icon, .song-icon {
   padding: 0;
   margin: 0;
   width: 50px;
   height: 50px;
+  background-size: 50px 50px;
   display: inline-block;
   background-repeat: none;
-  background-size: 50px 50px;
-  background-image: url('./svg/headphones.svg');
   -webkit-animation: flickerAnimation 1.5s infinite;
   -moz-animation: flickerAnimation 1.5s infinite;
   -o-animation: flickerAnimation 1.5s infinite;
   animation: flickerAnimation 1.5s infinite;
+}
+
+.volume-icon {
+  background-image: url('./svg/headphones.svg');
+}
+.song-icon {
+  background-image: url('./svg/musical-note.svg');
 }
 
 .spacebar {
@@ -197,6 +220,9 @@ strong {
   left: 0;
 }
 
+.disable-pointer {
+  pointer-events: none;
+}
 .noselect {
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none;   /* Chrome/Safari/Opera */
@@ -207,7 +233,7 @@ strong {
                                   not supported by any browser */
 }
 
-.intro-1, .intro-2, .intro-3 {
+.intro-1a, .intro-1b, .intro-2, .intro-3 {
   display: none;
 }
 
@@ -235,3 +261,40 @@ strong {
 .track-aligner { display: none; }
 /*.logo-container { display: none; }
 .header-container { display: none; }*/
+
+@media only screen and (max-height: 490px) {
+  .logo-container {
+    bottom: initial;
+    top: 20px;
+  }
+  .volume-icon, .song-icon {
+    width: 28px;
+    height: 28px;
+    background-size: 28px 28px;
+  }
+  
+  .header {
+    font-size: 60px;
+    line-height: 80px;
+    letter-spacing: 0px;
+  }
+  .subheader {
+    font-size: 9px;
+  }
+  
+  #intro {
+    margin-top: 110px;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .header {
+    font-size: 40px;
+    line-height: 70px;
+    letter-spacing: 0px;
+  }
+  .subheader {
+    font-size: 9px;
+  }
+  
+}

@@ -1,4 +1,3 @@
-require('babel-polyfill');
 const createLoop = require('raf-loop');
 const createApp = require('./lib/app');
 const newArray = require('new-array');
@@ -15,13 +14,6 @@ const createAudio = require('./lib/audio');
 const white = new THREE.Color('white');
 const opt = { antialias: false, alpha: false, stencil: false };
 const { updateProjectionMatrix, camera, scene, renderer, controls, canvas } = createApp(opt);
-
-// scene.add(new THREE.AmbientLight('#020102'));
-// const dir = new THREE.DirectionalLight('#fff', 1);
-// dir.position.set(0, 0, 0);
-// scene.add(dir);
-// var hemi = new THREE.HemisphereLight('#fff', '#adadad', 1);
-// scene.add(hemi);
 
 var floatDepth = false;
 renderer.gammaInput = true;
@@ -54,13 +46,36 @@ let mesh = null;
 const loop = createLoop(render).start();
 resize();
 window.addEventListener('resize', resize);
+window.addEventListener('touchstart', ev => ev.preventDefault());
+
+// ensure we are at top on iPhone in landscape
+const isIOS = /(iPhone|iPad)/i.test(navigator.userAgent);
+if (isIOS) {
+  const fixScroll = () => {
+    setTimeout(() => {
+      window.scrollTo(0, 1);
+    }, 500);
+  };
+
+  fixScroll();
+  window.addEventListener('orientationchange', () => {
+    fixScroll();
+  }, false);
+}
+
+window.onkeydown = function (e) { 
+  if (e.keyCode === 32) return false;
+};
 setupPost();
-setupScene({ palettes: getPalette() });
+
+const supportsMedia = !isIOS;
+setupScene({ palettes: getPalette(), supportsMedia });
 
 function setupPost () {
   composer.addPass(new EffectComposer.RenderPass(scene, camera));
 
   var pass = new EffectComposer.ShaderPass(SSAOShader);
+  pass.material.precision = 'highp'
   composer.addPass(pass);
   pass.uniforms.tDepth.value = depthTarget;
   pass.uniforms.cameraNear.value = camera.near;
@@ -139,6 +154,7 @@ function setupScene ({ palettes, envMap }) {
 
   const initialPalette = [ '#fff', '#e2e2e2' ];
   geo.setPalette(initialPalette);
+  document.body.style.background = '#F9F9F9';
 
   const audio = createAudio();
   let started = false;
@@ -157,6 +173,7 @@ function setupScene ({ palettes, envMap }) {
   audio.once('ready', () => {
     audio.playQueued();
   });
+    
   showIntro({ interactions }, () => {
     setTimeout(() => switchPalettes = true, 1500);
     started = true;
