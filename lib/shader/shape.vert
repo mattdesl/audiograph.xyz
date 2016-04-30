@@ -5,15 +5,13 @@ uniform float iGlobalTime;
 uniform mat4 projectionMatrix;
 uniform mat4 modelViewMatrix;
 uniform float dance;
-varying vec2 vUv;
-varying float angle;
+// varying vec2 vUv;
 
 #define PI 3.14
 #pragma glslify: noise = require('glsl-noise/simplex/3d');
 
 void main() {
-  vUv = uv;
-  
+  // vUv = uv;
   vec3 offset = vec3(0.0);
   float p = uv.x * 2.0 - 1.0;
 

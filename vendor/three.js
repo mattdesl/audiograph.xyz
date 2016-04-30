@@ -27891,7 +27891,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 			renderTarget.depthTexture.needsUpdate = true;
 		}
 
-		_this.setTexture( renderTarget.depthTexture, 0 );
+		_this.setTexture2D( renderTarget.depthTexture, 0 );
 
 		var webglDepthTexture = properties.get( renderTarget.depthTexture ).__webglTexture;
 		_gl.framebufferTexture2D( _gl.FRAMEBUFFER, _gl.DEPTH_ATTACHMENT, _gl.TEXTURE_2D, webglDepthTexture, 0 );

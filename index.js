@@ -4,7 +4,9 @@ const newArray = require('new-array');
 const geoScene = require('./lib/geoScene');
 const getPalette = require('./lib/palette');
 const setupInteractions = require('./lib/setupInteractions');
+const log = require('./lib/log');
 
+const isMobile = require('./lib/isMobile');
 const showIntro = require('./lib/intro');
 const EffectComposer = require('./lib/EffectComposer');
 const BloomPass = require('./lib/BloomPass');
@@ -47,6 +49,7 @@ const loop = createLoop(render).start();
 resize();
 window.addEventListener('resize', resize);
 window.addEventListener('touchstart', ev => ev.preventDefault());
+helloWorld();
 
 // ensure we are at top on iPhone in landscape
 const isIOS = /(iPhone|iPad)/i.test(navigator.userAgent);
@@ -149,7 +152,7 @@ function render (dt) {
 function setupScene ({ palettes, envMap }) {
   document.querySelector('#canvas').style.display = 'block';
 
-  console.log('Total palettes', palettes.length);
+  // console.log('Total palettes', palettes.length);
   const geo = geoScene({ palettes, scene, envMap, loop, camera, renderer });
 
   const initialPalette = [ '#fff', '#e2e2e2' ];
@@ -169,10 +172,15 @@ function setupScene ({ palettes, envMap }) {
   const introAutoGeo = setInterval(() => {
     geo.nextGeometry();
   }, 400);
-  audio.queue();
-  audio.once('ready', () => {
-    audio.playQueued();
-  });
+
+  if (isMobile) {
+    audio.skip();
+  } else {
+    audio.queue();
+    audio.once('ready', () => {
+      audio.playQueued();
+    });
+  }
     
   showIntro({ interactions }, () => {
     setTimeout(() => switchPalettes = true, 1500);
@@ -207,4 +215,8 @@ function setupScene ({ palettes, envMap }) {
       readyForPaletteChange = false;
     }
   });
+}
+
+function helloWorld () {
+  log.intro();
 }

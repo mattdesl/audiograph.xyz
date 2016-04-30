@@ -1,8 +1,8 @@
 // #extension GL_OES_standard_derivatives : enable
 precision mediump float;
 uniform vec3 color;
-varying vec2 vUv;
-varying float angle;
+// varying vec2 vUv;
+// varying float angle;
 
 // #pragma glslify: aastep = require('glsl-aastep');
 
