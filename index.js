@@ -181,11 +181,19 @@ function setupScene ({ palettes, envMap }) {
       audio.playQueued();
     });
   }
-    
+
+  // handle slow internet on first track
+  interactions.once('stop', (isLoaded) => {
+    const onAudioPlaying = () => {
+      setTimeout(() => {
+        firstSwap();
+      }, 1900);
+    };
+    if (!isLoaded) audio.once('ready', onAudioPlaying);
+    else onAudioPlaying();
+  })
+  
   showIntro({ interactions }, () => {
-    setTimeout(() => {
-      firstSwap();
-    }, 1900);
     started = true;
     clearInterval(introAutoGeo);
   });
