@@ -17,6 +17,15 @@ const white = new THREE.Color('white');
 const opt = { antialias: false, alpha: false, stencil: false };
 const { updateProjectionMatrix, camera, scene, renderer, controls, canvas } = createApp(opt);
 
+if (!renderer.extensions.get('WEBGL_depth_texture')) {
+  if (window.ga) window.ga('send', 'event', 'error', 'WEBGL_depth_texture', 0)
+  console.error('Requires WEBGL_depth_texture for full features.');
+}
+if (!renderer.extensions.get('OES_texture_float')) {
+  if (window.ga) window.ga('send', 'event', 'error', 'OES_texture_float', 0)
+  console.error('Requires OES_texture_float for full features.');
+}
+
 var floatDepth = false;
 renderer.gammaInput = true;
 renderer.gammaOutput = true;
@@ -182,6 +191,11 @@ function setupScene ({ palettes, envMap }) {
     });
   }
 
+  // every time we release spacebar, we reset the counter here
+  interactions.on('stop', () => {
+    readyForPaletteChange = false;
+  });
+
   // handle slow internet on first track
   interactions.once('stop', (isLoaded) => {
     const onAudioPlaying = () => {
@@ -191,7 +205,7 @@ function setupScene ({ palettes, envMap }) {
     };
     if (!isLoaded) audio.once('ready', onAudioPlaying);
     else onAudioPlaying();
-  })
+  });
   
   showIntro({ interactions }, () => {
     started = true;
