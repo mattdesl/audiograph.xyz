@@ -17,6 +17,9 @@
 - space bar UI
 - dolby digital plus
 - support safari
+- better analytics
+- support non-webgl
+- handle audio errors
 
 chromatune
 BDKNG
