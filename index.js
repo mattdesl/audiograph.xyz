@@ -174,6 +174,7 @@ function setupScene ({ palettes, envMap }) {
   let switchPalettes = false;
   let readyForGeometry = newArray(audio.binCount, true);
   let readyForPaletteChange = false;
+  let paletteInterval;
 
   const whitePalette = [ '#fff', '#d3d3d3', '#a5a5a5' ];
   const interactions = setupInteractions({ whitePalette, scene, controls, audio, camera, geo });
@@ -193,6 +194,7 @@ function setupScene ({ palettes, envMap }) {
 
   // every time we release spacebar, we reset the counter here
   interactions.on('stop', () => {
+    resetPaletteSwapping();
     readyForPaletteChange = false;
   });
 
@@ -239,9 +241,13 @@ function setupScene ({ palettes, envMap }) {
   
   function firstSwap () {
     switchPalettes = true;
-    geo.nextPalette();
-
-    setInterval(() => {
+    geo.nextPalette({ shuffle: false });
+    resetPaletteSwapping();
+  }
+  
+  function resetPaletteSwapping () {
+    if (paletteInterval) clearInterval(paletteInterval);
+    paletteInterval = setInterval(() => {
       readyForPaletteChange = true;
     }, 2000);
   }
