@@ -15,10 +15,10 @@
   font-family: 'NotoSansBold';
   src: url('./fonts/NotoSans-Bold.ttf');
 }
-/*@font-face {
+@font-face {
   font-family: 'NotoSansItalic';
   src: url('./fonts/NotoSans-Italic.ttf');
-}*/
+}
 body {
   margin: 0;
   background: #fff;
@@ -208,10 +208,10 @@ strong {
   display: inline;
   content: ' ';
   /*background: #dddddd;*/
-  border-radius: 5px;
+  border-radius: 3px;
   box-sizing: border-box;
   border: 2px solid #3C3C3C;
-  opacity: 0.25;
+  opacity: 0.2;
   width: 100%;
   z-index: -10;
   height: 100%;
