@@ -1,7 +1,7 @@
 {
-  "name": "dolby",
+  "name": "audiograph.xyz",
   "version": "1.0.0",
-  "description": "",
+  "description": "A Visual Exploration of Moderat's 2013 Album, II",
   "main": "index.js",
   "license": "MIT",
   "author": {
@@ -72,10 +72,10 @@
   "keywords": [],
   "repository": {
     "type": "git",
-    "url": "git://github.com/mattdesl/dolby.git"
+    "url": "git://github.com/mattdesl/audiograph.xyz.git"
   },
-  "homepage": "https://github.com/mattdesl/dolby",
+  "homepage": "https://github.com/mattdesl/audiograph.xyz",
   "bugs": {
-    "url": "https://github.com/mattdesl/dolby/issues"
+    "url": "https://github.com/mattdesl/audiograph.xyz/issues"
   }
 }

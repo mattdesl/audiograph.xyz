@@ -1,50 +1,19 @@
-# dolby
+# [audiograph.xyz](http://audiograph.xyz/)
 
-[![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges)
+:radio:
 
+> A Visual Exploration of Moderat's 2013 Album, *II*.
 
-- name
-- domain name
-- hosting
-- show track name
-- frequencies for each song
-- one more frequency band feature ? 
-- mouse interactions
-- good first few colors
-- intro text
-  "Turn up your volume!"
-  "A visual exploration of Moderat's 2010 album, II"
-- space bar UI
-- dolby digital plus
-- support safari
-- better analytics
-- support non-webgl
-- handle audio errors
+Uses WebGL, WebAudio and Dolby Digital Plus in supported browsers.
 
-chromatune
-BDKNG
-chromasound
-audiopop
-chromabop
-chromabeat
-inksound
-dampener
-reverbs.xyz
-audiograph
-chromatik
-audiodot
-chroma
-chromas
-audiofloat
-audiodrift
-chromaflow
-vinyl
+## Credits
 
+- Created by Matt DesLauriers ([@mattdesl](https://twitter.com/mattdesl))
+- Audio by [Moderat](http://moderat.fm/)
+- Color palettes sourced from [ColourLovers.com](http://www.colourlovers.com/)
+- With UX help from Mélissa Hernandez ([@Mlissa_H](https://twitter.com/Mlissa_H))
 
-## Usage
-
-[![NPM](https://nodei.co/npm/dolby.png)](https://www.npmjs.com/package/dolby)
 
 ## License
 
-MIT, see [LICENSE.md](http://github.com/mattdesl/dolby/blob/master/LICENSE.md) for details.
+MIT, see [LICENSE.md](http://github.com/mattdesl/audiograph.xyz/blob/master/LICENSE.md) for details.
