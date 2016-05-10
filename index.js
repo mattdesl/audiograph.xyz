@@ -22,7 +22,7 @@ if (!renderer.extensions.get('WEBGL_depth_texture')) {
   console.error('Requires WEBGL_depth_texture for full features.');
 }
 if (!renderer.extensions.get('OES_texture_float')) {
-  if (window.ga) window.ga('send', 'event', 'error', 'OES_texture_float', 0)
+  if (window.ga) window.ga('send', 'event', 'error', 'OES_texture_float', 1)
   console.error('Requires OES_texture_float for full features.');
 }
 
