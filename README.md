@@ -2,7 +2,7 @@
 
 :radio:
 
-> A Visual Exploration of Moderat's 2013 Album, *II*.
+> A visual exploration of Ghost's 2012 album, *Judge*
 
 Uses WebGL, WebAudio and Dolby Digital Plus in supported browsers.
 
@@ -17,7 +17,7 @@ Uses WebGL, WebAudio and Dolby Digital Plus in supported browsers.
 ## Credits
 
 - Created by Matt DesLauriers ([@mattdesl](https://twitter.com/mattdesl))
-- Audio by [Moderat](http://moderat.fm/)
+- Creative Commons Audio by [Ghosts](https://ghostsmusic.bandcamp.com/album/judge)
 - Color palettes sourced from [ColourLovers.com](http://www.colourlovers.com/)
 - With UX help from Mélissa Hernandez ([@Mlissa_H](https://twitter.com/Mlissa_H))
 

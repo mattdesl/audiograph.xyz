@@ -203,7 +203,7 @@ function setupScene ({ palettes, envMap }) {
     const onAudioPlaying = () => {
       setTimeout(() => {
         firstSwap();
-      }, 1900);
+      }, 3300);
     };
     if (!isLoaded) audio.once('ready', onAudioPlaying);
     else onAudioPlaying();
@@ -241,7 +241,7 @@ function setupScene ({ palettes, envMap }) {
   
   function firstSwap () {
     switchPalettes = true;
-    geo.nextPalette({ shuffle: false });
+    // geo.nextPalette({ shuffle: false });
     resetPaletteSwapping();
   }
   
