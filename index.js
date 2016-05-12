@@ -13,14 +13,6 @@ const EffectComposer = require('./lib/EffectComposer');
 const BloomPass = require('./lib/BloomPass');
 const SSAOShader = require('./lib/shader/SSAOShader');
 const createAudio = require('./lib/audio');
-const query = require('./lib/query')();
-
-document.querySelector('.subheader').innerHTML = query.alt
-  ? `A visual exploration of <a href="https://pilotpriest.bandcamp.com/">Pilotpriest's</a> 2016 album, <em>TRANS</em>`
-  : `A visual exploration of Moderat's 2013 album, <em>II</em>`;
-document.querySelector('.track-name-hint').textContent = query.alt
-  ? 'Matter'
-  : 'The Mark (Interlude)';
 
 const white = new THREE.Color('white');
 const opt = { antialias: false, alpha: false, stencil: false };
@@ -209,10 +201,9 @@ function setupScene ({ palettes, envMap }) {
 
   // handle slow internet on first track
   interactions.once('stop', (isLoaded) => {
-    // if (query.alt) geo.clearGeometry();
     let firstSwapTimeout = null;
     const onAudioPlaying = () => {
-      const firstSwapDelay = query.alt ? 7721 : 1900;
+      const firstSwapDelay = 7721;
       firstSwapTimeout = setTimeout(() => {
         firstSwap();
       }, firstSwapDelay);
