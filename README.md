@@ -1,12 +1,12 @@
-# [audiograph.xyz](http://audiograph.xyz/)
+# [audiograph.xyz](http://audiograph.xyz/?cc)
 
 :radio:
 
-> A visual exploration of Ghost's 2012 album, *Judge*
+> A visual exploration of Pilotpriest's 2016 album, *TRANS*
 
 Uses WebGL, WebAudio and Dolby Digital Plus in supported browsers.
 
-[http://audiograph.xyz/](http://audiograph.xyz/)
+[http://audiograph.xyz/](http://audiograph.xyz/?cc)
 
 ## Screenshots
 
@@ -17,7 +17,7 @@ Uses WebGL, WebAudio and Dolby Digital Plus in supported browsers.
 ## Credits
 
 - Created by Matt DesLauriers ([@mattdesl](https://twitter.com/mattdesl))
-- Creative Commons Audio by [Ghosts](https://ghostsmusic.bandcamp.com/album/judge)
+- Audio by [Pilotpriest](https://pilotpriest.bandcamp.com/) (with permission)
 - Color palettes sourced from [ColourLovers.com](http://www.colourlovers.com/)
 - With UX help from Mélissa Hernandez ([@Mlissa_H](https://twitter.com/Mlissa_H))
 

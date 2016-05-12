@@ -20,6 +20,7 @@
   src: url('./fonts/NotoSans-Italic.ttf');
 }
 body {
+  -webkit-text-size-adjust: 100%; /* Prevent font scaling in landscape */
   margin: 0;
   background: #fff;
   color: #3C3C3C;
@@ -96,11 +97,44 @@ strong {
   width: 100%;
   text-transform: uppercase;
   font-size: 12px;
-  letter-spacing: initial;
+  letter-spacing: 0;
   margin: 0;
   padding: 0;
   opacity: 0.5;
-  margin-top: -20px;
+  margin-top: -15px;
+  position: relative;
+}
+
+a, a:active, .info:visited {
+  font-family: 'PierBold';
+  text-decoration: none;
+  color: #929292;
+  display: inline-block;
+  /*z-index: 10;*/
+  position: relative;
+}
+a:hover {
+  color: #3C3C3C;
+}
+a::after, a:hover::after {
+  content: ' ';
+  width: 100%;
+  left: 0;
+  background: #3C3C3C;
+  position: absolute;
+  -webkit-transition: all 0.05s ease-out;
+  -moz-transition: all 0.05s ease-out;
+  -ms-transition: all 0.05s ease-out;
+  -o-transition: all 0.05s ease-out;
+  transition: all 0.05s ease-out;
+}
+a::after {
+  height: 0px;
+  bottom: 0px;
+}
+a:hover::after {
+  height: 4px;
+  bottom: -4px;
 }
 
 .subtext {
@@ -223,6 +257,10 @@ strong {
 .disable-pointer {
   pointer-events: none;
 }
+.enable-pointer {
+  pointer-events: auto;
+}
+
 .noselect {
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none;   /* Chrome/Safari/Opera */
@@ -294,7 +332,6 @@ strong {
     letter-spacing: 0px;
   }
   .subheader {
-    font-size: 9px;
+    font-size: 9.5px;
   }
-  
 }

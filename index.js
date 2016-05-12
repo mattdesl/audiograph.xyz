@@ -3,6 +3,7 @@ const createApp = require('./lib/app');
 const newArray = require('new-array');
 const geoScene = require('./lib/geoScene');
 const getPalette = require('./lib/palette');
+const rightNow = require('right-now');
 const setupInteractions = require('./lib/setupInteractions');
 const log = require('./lib/log');
 
@@ -12,18 +13,24 @@ const EffectComposer = require('./lib/EffectComposer');
 const BloomPass = require('./lib/BloomPass');
 const SSAOShader = require('./lib/shader/SSAOShader');
 const createAudio = require('./lib/audio');
+const query = require('./lib/query')();
+
+document.querySelector('.subheader').innerHTML = query.alt
+  ? `A visual exploration of <a href="https://pilotpriest.bandcamp.com/">Pilotpriest's</a> 2016 album, <em>TRANS</em>`
+  : `A visual exploration of Moderat's 2013 album, <em>II</em>`;
+document.querySelector('.track-name-hint').textContent = query.alt
+  ? 'Matter'
+  : 'The Mark (Interlude)';
 
 const white = new THREE.Color('white');
 const opt = { antialias: false, alpha: false, stencil: false };
 const { updateProjectionMatrix, camera, scene, renderer, controls, canvas } = createApp(opt);
 
+let supportsDepth = true;
 if (!renderer.extensions.get('WEBGL_depth_texture')) {
   if (window.ga) window.ga('send', 'event', 'error', 'WEBGL_depth_texture', 0)
-  console.error('Requires WEBGL_depth_texture for full features.');
-}
-if (!renderer.extensions.get('OES_texture_float')) {
-  if (window.ga) window.ga('send', 'event', 'error', 'OES_texture_float', 1)
-  console.error('Requires OES_texture_float for full features.');
+  console.warn('Requires WEBGL_depth_texture for certain post-processing effects.');
+  supportsDepth = false;
 }
 
 var floatDepth = false;
@@ -41,7 +48,7 @@ const targets = [ rt1, rt2, rtInitial, rtDepth ].filter(Boolean);
 if (floatDepth) {
   composer.depthTexture = rtDepth;  
   rtDepth.texture.type = THREE.FloatType;
-} else {
+} else if (supportsDepth) {
   rtInitial.depthTexture = new THREE.DepthTexture();
 }
 
@@ -86,12 +93,14 @@ setupScene({ palettes: getPalette(), supportsMedia });
 function setupPost () {
   composer.addPass(new EffectComposer.RenderPass(scene, camera));
 
-  var pass = new EffectComposer.ShaderPass(SSAOShader);
-  pass.material.precision = 'highp'
-  composer.addPass(pass);
-  pass.uniforms.tDepth.value = depthTarget;
-  pass.uniforms.cameraNear.value = camera.near;
-  pass.uniforms.cameraFar.value = camera.far;
+  if (supportsDepth) {
+    var pass = new EffectComposer.ShaderPass(SSAOShader);
+    pass.material.precision = 'highp'
+    composer.addPass(pass);
+    pass.uniforms.tDepth.value = depthTarget;
+    pass.uniforms.cameraNear.value = camera.near;
+    pass.uniforms.cameraFar.value = camera.far;
+  }
 
   composer.addPass(new BloomPass(scene, camera));
   composer.passes[composer.passes.length - 1].renderToScreen = true;
@@ -200,15 +209,21 @@ function setupScene ({ palettes, envMap }) {
 
   // handle slow internet on first track
   interactions.once('stop', (isLoaded) => {
+    // if (query.alt) geo.clearGeometry();
+    let firstSwapTimeout = null;
     const onAudioPlaying = () => {
-      setTimeout(() => {
+      const firstSwapDelay = query.alt ? 7721 : 1900;
+      firstSwapTimeout = setTimeout(() => {
         firstSwap();
-      }, 3300);
+      }, firstSwapDelay);
     };
     if (!isLoaded) audio.once('ready', onAudioPlaying);
     else onAudioPlaying();
+    interactions.once('start', () => {
+      if (firstSwapTimeout) clearTimeout(firstSwapTimeout);
+    });
   });
-  
+
   showIntro({ interactions }, () => {
     started = true;
     clearInterval(introAutoGeo);
@@ -219,7 +234,6 @@ function setupScene ({ palettes, envMap }) {
       readyForGeometry[i] = true;
     }
   }, 100);
-
 
   loop.on('tick', dt => {
     time += dt;
@@ -238,14 +252,15 @@ function setupScene ({ palettes, envMap }) {
       readyForPaletteChange = false;
     }
   });
-  
+
   function firstSwap () {
     switchPalettes = true;
-    // geo.nextPalette({ shuffle: false });
+    geo.nextPalette();
     resetPaletteSwapping();
   }
   
   function resetPaletteSwapping () {
+    readyForPaletteChange = false;
     if (paletteInterval) clearInterval(paletteInterval);
     paletteInterval = setInterval(() => {
       readyForPaletteChange = true;
