@@ -193,14 +193,15 @@ function setupScene ({ palettes, envMap }) {
     });
   }
 
-  // every time we release spacebar, we reset the counter here
-  interactions.on('stop', () => {
-    resetPaletteSwapping();
-    readyForPaletteChange = false;
-  });
 
   // handle slow internet on first track
   interactions.once('stop', (isLoaded) => {
+    // every time we release spacebar, we reset the counter here
+    interactions.on('stop', () => {
+      resetPaletteSwapping();
+      readyForPaletteChange = false;
+    });
+
     let firstSwapTimeout = null;
     const onAudioPlaying = () => {
       const firstSwapDelay = 7721;
