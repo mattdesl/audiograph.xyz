@@ -2,7 +2,7 @@
 
 :radio:
 
-> A visual exploration of Pilotpriest's 2016 album, *TRANS*
+> A visual exploration of [Pilotpriest's](https://pilotpriest.bandcamp.com) 2016 album, *TRANS*
 
 Uses WebGL, WebAudio and Dolby Digital Plus in supported browsers.
 
