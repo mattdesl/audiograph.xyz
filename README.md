@@ -21,6 +21,13 @@ Uses WebGL, WebAudio and Dolby Digital Plus in supported browsers.
 - Color palettes sourced from [ColourLovers.com](http://www.colourlovers.com/)
 - With UX help from Mélissa Hernandez ([@Mlissa_H](https://twitter.com/Mlissa_H))
 
+## Accolades
+
+- 2nd place winner for Dolby Digital Web Audio Challenge
+- [Awwwards Site of the Day](http://www.awwwards.com/sites/audiograph) on May 20th, 2016.
+
 ## License
+
+The code here is licensed under MIT. However, I ask you please contact me if you wish to make a reproduction.
 
 MIT, see [LICENSE.md](http://github.com/mattdesl/audiograph.xyz/blob/master/LICENSE.md) for details.

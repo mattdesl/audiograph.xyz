@@ -1,3 +1,7 @@
+The code here is licensed under MIT. However, I ask you please contact me if you wish to make a reproduction.
+
+---
+
 The MIT License (MIT)
 Copyright (c) 2016 Matt DesLauriers
 
