@@ -28,6 +28,9 @@ Uses WebGL, WebAudio and Dolby Digital Plus in supported browsers.
 
 ## License
 
-The code here is licensed under MIT. However, I ask you please contact me if you wish to make a reproduction.
+Please contact me if you wish to make a reproduction.
 
-MIT, see [LICENSE.md](http://github.com/mattdesl/audiograph.xyz/blob/master/LICENSE.md) for details.
+---
+
+CreativeCommons Attribution-NonCommercial-ShareAlike 4.0 International.  
+http://creativecommons.org/licenses/by-nc-sa/4.0/
