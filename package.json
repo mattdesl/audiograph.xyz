@@ -18,6 +18,7 @@
     "dom-css": "^2.0.0",
     "geo-arc": "^1.1.2",
     "geo-piecering": "^1.0.2",
+    "gl-vec2": "^1.0.0",
     "glsl-aastep": "^1.0.1",
     "glsl-blend-soft-light": "^1.0.5",
     "glsl-hash-blur": "^1.0.3",

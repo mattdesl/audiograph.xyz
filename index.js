@@ -8,7 +8,7 @@ const setupInteractions = require('./lib/setupInteractions');
 const log = require('./lib/log');
 
 const isMobile = require('./lib/isMobile');
-const showIntro = require('./lib/intro');
+// const showIntro = require('./lib/intro');
 const EffectComposer = require('./lib/EffectComposer');
 const BloomPass = require('./lib/BloomPass');
 const SSAOShader = require('./lib/shader/SSAOShader');
@@ -16,7 +16,7 @@ const createAudio = require('./lib/audio');
 
 const white = new THREE.Color('white');
 const opt = { antialias: false, alpha: false, stencil: false };
-const { updateProjectionMatrix, camera, scene, renderer, controls, canvas } = createApp(opt);
+const { updateProjectionMatrix, camera, scene, renderer, canvas } = createApp(opt);
 
 let supportsDepth = true;
 if (!renderer.extensions.get('WEBGL_depth_texture')) {
@@ -166,7 +166,7 @@ function setupScene ({ palettes, envMap }) {
   const geo = geoScene({ palettes, scene, envMap, loop, camera, renderer });
 
   const initialPalette = [ '#fff', '#e2e2e2' ];
-  geo.setPalette(initialPalette);
+  geo.setPalette(initialPalette, true);
   document.body.style.background = '#F9F9F9';
 
   const audio = createAudio();
@@ -178,7 +178,7 @@ function setupScene ({ palettes, envMap }) {
   let paletteInterval;
 
   const whitePalette = [ '#fff', '#d3d3d3', '#a5a5a5' ];
-  const interactions = setupInteractions({ whitePalette, scene, controls, audio, camera, geo });
+  const interactions = setupInteractions({ whitePalette, scene, audio, camera, geo });
 
   const introAutoGeo = setInterval(() => {
     geo.nextGeometry();
@@ -216,11 +216,13 @@ function setupScene ({ palettes, envMap }) {
     });
   });
 
-  showIntro({ interactions }, () => {
-    started = true;
-    clearInterval(introAutoGeo);
-  });
-
+  // showIntro({ interactions }, () => {
+  //   started = true;
+  //   clearInterval(introAutoGeo);
+  // });
+  interactions.enable();
+  started = true;
+  clearInterval(introAutoGeo);
   setInterval(() => {
     for (let i = 0; i < readyForGeometry.length; i++) {
       readyForGeometry[i] = true;
