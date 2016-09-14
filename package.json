@@ -4,6 +4,9 @@
   "description": "A visual exploration of sound.",
   "main": "index.js",
   "license": "MIT",
+  "semistandard": {
+    "globals": ["THREE"]
+  },
   "author": {
     "name": "Matt DesLauriers",
     "email": "dave.des@gmail.com",

@@ -4,7 +4,6 @@ const newArray = require('new-array');
 const geoScene = require('./lib/geoScene');
 const getPalette = require('./lib/palette');
 const rightNow = require('right-now');
-const setupInteractions = require('./lib/setupInteractions');
 const log = require('./lib/log');
 
 const isMobile = require('./lib/isMobile');
@@ -178,7 +177,6 @@ function setupScene ({ palettes, envMap }) {
   let paletteInterval;
 
   const whitePalette = [ '#fff', '#d3d3d3', '#a5a5a5' ];
-  const interactions = setupInteractions({ whitePalette, scene, audio, camera, geo });
 
   if (isMobile) {
     audio.skip();
@@ -189,42 +187,8 @@ function setupScene ({ palettes, envMap }) {
     });
   }
 
-
-  // handle slow internet on first track
-  interactions.once('stop', (isLoaded) => {
-    // every time we release spacebar, we reset the counter here
-    interactions.on('stop', () => {
-      resetPaletteSwapping();
-      readyForPaletteChange = false;
-    });
-
-    let firstSwapTimeout = null;
-    const onAudioPlaying = () => {
-      const firstSwapDelay = 7721;
-      firstSwapTimeout = setTimeout(() => {
-        firstSwap();
-      }, firstSwapDelay);
-    };
-    if (!isLoaded) audio.once('ready', onAudioPlaying);
-    else onAudioPlaying();
-    interactions.once('start', () => {
-      if (firstSwapTimeout) clearTimeout(firstSwapTimeout);
-    });
-  });
-
-  // showIntro({ interactions }, () => {
-  //   started = true;
-  //   clearInterval(introAutoGeo);
-  // });
-  interactions.enable();
   started = true;
-  clearInterval(introAutoGeo);
-  firstSwap();
-  setInterval(() => {
-    for (let i = 0; i < readyForGeometry.length; i++) {
-      readyForGeometry[i] = true;
-    }
-  }, 100);
+  geo.setBackground(whitePalette.shift());
 
   loop.on('tick', dt => {
     time += dt;
@@ -244,19 +208,6 @@ function setupScene ({ palettes, envMap }) {
     // }
   });
 
-  function firstSwap () {
-    switchPalettes = true;
-    geo.nextPalette();
-    resetPaletteSwapping();
-  }
-  
-  function resetPaletteSwapping () {
-    readyForPaletteChange = false;
-    if (paletteInterval) clearInterval(paletteInterval);
-    paletteInterval = setInterval(() => {
-      readyForPaletteChange = true;
-    }, 2000);
-  }
 }
 
 function helloWorld () {
