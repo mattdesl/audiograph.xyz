@@ -41,6 +41,7 @@
     "three-copyshader": "0.0.1",
     "three-effectcomposer": "0.0.1",
     "three-simplicial-complex": "^69.0.6",
+    "touches": "^1.2.0",
     "tweenr": "^2.1.3",
     "unlerp": "^1.0.1",
     "web-audio-player": "^1.1.1"

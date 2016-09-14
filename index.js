@@ -180,10 +180,6 @@ function setupScene ({ palettes, envMap }) {
   const whitePalette = [ '#fff', '#d3d3d3', '#a5a5a5' ];
   const interactions = setupInteractions({ whitePalette, scene, audio, camera, geo });
 
-  const introAutoGeo = setInterval(() => {
-    geo.nextGeometry();
-  }, 400);
-
   if (isMobile) {
     audio.skip();
   } else {
@@ -223,6 +219,7 @@ function setupScene ({ palettes, envMap }) {
   interactions.enable();
   started = true;
   clearInterval(introAutoGeo);
+  firstSwap();
   setInterval(() => {
     for (let i = 0; i < readyForGeometry.length; i++) {
       readyForGeometry[i] = true;
@@ -235,16 +232,16 @@ function setupScene ({ palettes, envMap }) {
 
     audio.update(dt);
 
-    for (let i = 0; i < audio.beats.length; i++) {
-      if (readyForGeometry[i] && audio.beats[i]) {
-        geo.nextGeometry({ type: i });
-        readyForGeometry[i] = false;
-      }
-    }
-    if (!interactions.keyDown && readyForPaletteChange && audio.beats[1] && switchPalettes) {
-      geo.nextPalette();
-      readyForPaletteChange = false;
-    }
+    // for (let i = 0; i < audio.beats.length; i++) {
+    //   if (readyForGeometry[i] && audio.beats[i]) {
+    //     geo.nextGeometry({ type: i });
+    //     readyForGeometry[i] = false;
+    //   }
+    // }
+    // if (!interactions.keyDown && readyForPaletteChange && audio.beats[1] && switchPalettes) {
+    //   geo.nextPalette();
+    //   readyForPaletteChange = false;
+    // }
   });
 
   function firstSwap () {
