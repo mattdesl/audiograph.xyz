@@ -5,7 +5,9 @@
   "main": "index.js",
   "license": "MIT",
   "semistandard": {
-    "globals": ["THREE"]
+    "globals": [
+      "THREE"
+    ]
   },
   "author": {
     "name": "Matt DesLauriers",
@@ -33,6 +35,7 @@
     "index-of-array": "^1.0.0",
     "ios-safe-audio-context": "^1.0.1",
     "lerp": "^1.0.3",
+    "mouse-event-offset": "^3.0.2",
     "new-array": "^1.0.0",
     "object-assign": "^4.0.1",
     "orbit-controls": "^1.0.4",
@@ -41,11 +44,13 @@
     "random-float": "^1.0.0",
     "right-now": "^1.0.0",
     "soundbank-reverb": "^1.1.2",
+    "three-buffer-vertex-data": "^1.0.2",
     "three-copyshader": "0.0.1",
     "three-effectcomposer": "0.0.1",
     "three-simplicial-complex": "^69.0.6",
     "touches": "^1.2.0",
-    "tweenr": "^2.1.3",
+    "triangle-centroid": "^1.0.0",
+    "tweenr": "^2.1.4",
     "unlerp": "^1.0.1",
     "web-audio-player": "^1.1.1"
   },
@@ -62,7 +67,8 @@
     "test": "node test.js",
     "start": "budo index.js:bundle.js --live -- -t babelify -t glslify -t brfs -t [ installify --save ]",
     "build": "browserify index.js -t babelify -t glslify -t brfs | uglifyjs -m -c warnings=false > bundle.js",
-    "deploy": "surge -p ."
+    "deploy:upload": "surge -p .",
+    "deploy": "npm run build && npm run deploy:upload"
   },
   "keywords": [],
   "repository": {

@@ -162,13 +162,22 @@ function setupScene ({ palettes, envMap }) {
   document.querySelector('#canvas').style.display = 'block';
 
   // console.log('Total palettes', palettes.length);
-  const geo = geoScene({ palettes, scene, envMap, loop, camera, renderer });
+  const audio = createAudio();
+  const onHotspotDown = () => {
+    audio.effect = 1;
+  };
+  const onHotspotUp = () => {
+    audio.effect = 0;
+  };
+  const geo = geoScene({
+    palettes, scene, envMap, loop, camera, renderer,
+    onHotspotUp, onHotspotDown
+  });
 
   const initialPalette = [ '#fff', '#e2e2e2' ];
   geo.setPalette(initialPalette, true);
   document.body.style.background = '#F9F9F9';
 
-  const audio = createAudio();
   let started = false;
   let time = 0;
   let switchPalettes = false;

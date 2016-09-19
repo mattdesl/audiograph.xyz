@@ -64,7 +64,10 @@ void main() {
 
   // angle = (atan(-1.0 * currentScreen.y, currentScreen.x) + PI * 1.0) / (PI * 2.0);
   
-  mat4 tProj = projectionOffset(75.0 * 3.14 / 180.0, aspect, 0.01, 100.0);
+  mat4 tProj = mat4(projectionMatrix);
+  tProj[2].x -= screenOffset.x;
+  tProj[2].y -= screenOffset.y;
+  // mat4 tProj = projectionOffset(75.0 * 3.14 / 180.0, aspect, 0.01, 100.0);
   // offsetProjectionCenter(500.0, resolution.x, 0.0, resolution.y, tProj);
   gl_Position = tProj * modelViewMatrix * newPosition;
 }
