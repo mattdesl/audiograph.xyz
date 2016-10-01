@@ -1,7 +1,7 @@
 const createLoop = require('raf-loop');
 const createApp = require('./lib/app');
 const newArray = require('new-array');
-const geoScene = require('./lib/geoScene');
+const createScene = require('./lib/createScene');
 const getPalette = require('./lib/palette');
 const rightNow = require('right-now');
 const log = require('./lib/log');
@@ -24,30 +24,21 @@ if (!renderer.extensions.get('WEBGL_depth_texture')) {
   supportsDepth = false;
 }
 
-var floatDepth = false;
 renderer.gammaInput = true;
 renderer.gammaOutput = true;
 renderer.gammaFactor = 2.2;
 
 const rt1 = createRenderTarget();
 const rt2 = createRenderTarget();
-const rtDepth = floatDepth ? rt1.clone() : null;
 const rtInitial = createRenderTarget();
 const composer = new EffectComposer(renderer, rt1, rt2, rtInitial);
-const targets = [ rt1, rt2, rtInitial, rtDepth ].filter(Boolean);
+const targets = [ rt1, rt2, rtInitial ];
 
-if (floatDepth) {
-  composer.depthTexture = rtDepth;  
-  rtDepth.texture.type = THREE.FloatType;
-} else if (supportsDepth) {
+if (supportsDepth) {
   rtInitial.depthTexture = new THREE.DepthTexture();
 }
 
-const depthTarget = floatDepth ? rtDepth : rtInitial.depthTexture;
-
-const depthMaterial = new THREE.MeshDepthMaterial();
-depthMaterial.depthPacking = THREE.BasicDepthPacking;
-depthMaterial.blending = THREE.NoBlending;
+const depthTarget = rtInitial.depthTexture;
 
 let time = 0;
 let mesh = null;
@@ -56,7 +47,6 @@ const loop = createLoop(render).start();
 resize();
 window.addEventListener('resize', resize);
 window.addEventListener('touchstart', ev => ev.preventDefault());
-helloWorld();
 
 // ensure we are at top on iPhone in landscape
 const isIOS = /(iPhone|iPad)/i.test(navigator.userAgent);
@@ -73,7 +63,7 @@ if (isIOS) {
   }, false);
 }
 
-window.onkeydown = function (e) { 
+window.onkeydown = function (e) {
   if (e.keyCode === 32) return false;
 };
 setupPost();
@@ -86,7 +76,7 @@ function setupPost () {
 
   if (supportsDepth) {
     var pass = new EffectComposer.ShaderPass(SSAOShader);
-    pass.material.precision = 'highp'
+    pass.material.precision = 'highp';
     composer.addPass(pass);
     pass.uniforms.tDepth.value = depthTarget;
     pass.uniforms.cameraNear.value = camera.near;
@@ -136,15 +126,6 @@ function render (dt) {
 
   updateProjectionMatrix();
 
-  const oldClear = renderer.getClearColor();
-  if (floatDepth) {
-    scene.overrideMaterial = depthMaterial;
-    renderer.setRenderTarget(rtDepth);
-    renderer.setClearColor(white, 1);
-    renderer.clear(true, true, true);
-    renderer.render(scene, camera, rtDepth);
-  }
-
   composer.passes.forEach(pass => {
     if (pass.uniforms && pass.uniforms.resolution) {
       pass.uniforms.resolution.value.set(rtInitial.width, rtInitial.height);
@@ -152,13 +133,12 @@ function render (dt) {
   });
 
   renderer.setRenderTarget(null);
-  renderer.setClearColor(oldClear, 1);
   scene.overrideMaterial = null;
   if (composer.passes.length > 1) composer.render();
   else renderer.render(scene, camera);
 }
 
-function setupScene ({ palettes, envMap }) {
+function setupScene ({ palettes }) {
   document.querySelector('#canvas').style.display = 'block';
 
   // console.log('Total palettes', palettes.length);
@@ -169,23 +149,22 @@ function setupScene ({ palettes, envMap }) {
   const onHotspotUp = () => {
     audio.effect = 0;
   };
-  const geo = geoScene({
-    palettes, scene, envMap, loop, camera, renderer,
-    onHotspotUp, onHotspotDown
-  });
-
-  const initialPalette = [ '#fff', '#e2e2e2' ];
-  geo.setPalette(initialPalette, true);
-  document.body.style.background = '#F9F9F9';
-
-  let started = false;
-  let time = 0;
-  let switchPalettes = false;
-  let readyForGeometry = newArray(audio.binCount, true);
-  let readyForPaletteChange = false;
-  let paletteInterval;
 
   const whitePalette = [ '#fff', '#d3d3d3', '#a5a5a5' ];
+  const background = whitePalette.shift();
+
+  const geo = createScene({
+    palettes,
+    scene,
+    whitePalette,
+    loop,
+    camera,
+    renderer,
+    onHotspotUp,
+    onHotspotDown
+  });
+
+  let started = false;
 
   if (isMobile) {
     audio.skip();
@@ -197,7 +176,8 @@ function setupScene ({ palettes, envMap }) {
   }
 
   started = true;
-  geo.setBackground(whitePalette.shift());
+  renderer.setClearColor(new THREE.Color(background), 1);
+  document.body.style.background = background;
 
   loop.on('tick', dt => {
     time += dt;
@@ -216,7 +196,6 @@ function setupScene ({ palettes, envMap }) {
     //   readyForPaletteChange = false;
     // }
   });
-
 }
 
 function helloWorld () {
