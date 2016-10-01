@@ -7,6 +7,7 @@ uniform mat4 modelViewMatrix;
 uniform float dance;
 uniform float animate;
 uniform vec2 screenOffset;
+uniform vec2 beats;
 // varying vec2 vUv;
 
 #define PI 3.14

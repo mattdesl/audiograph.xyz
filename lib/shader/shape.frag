@@ -1,6 +1,7 @@
 // #extension GL_OES_standard_derivatives : enable
-precision mediump float;
+precision highp float;
 uniform vec3 color;
+uniform vec2 beats;
 uniform float opacity;
 // varying vec2 vUv;
 // varying float angle;

@@ -12,6 +12,7 @@ const EffectComposer = require('./lib/EffectComposer');
 const BloomPass = require('./lib/BloomPass');
 const SSAOShader = require('./lib/shader/SSAOShader');
 const createAudio = require('./lib/audio');
+const tweenr = require('tweenr');
 
 const white = new THREE.Color('white');
 const opt = { antialias: false, alpha: false, stencil: false };
@@ -44,9 +45,6 @@ let time = 0;
 let mesh = null;
 
 const loop = createLoop(render).start();
-resize();
-window.addEventListener('resize', resize);
-window.addEventListener('touchstart', ev => ev.preventDefault());
 
 // ensure we are at top on iPhone in landscape
 const isIOS = /(iPhone|iPad)/i.test(navigator.userAgent);
@@ -69,7 +67,11 @@ window.onkeydown = function (e) {
 setupPost();
 
 const supportsMedia = !isIOS;
-setupScene({ palettes: getPalette(), supportsMedia });
+const geo = setupScene({ palettes: getPalette(), supportsMedia });
+
+resize();
+window.addEventListener('resize', resize);
+window.addEventListener('touchstart', ev => ev.preventDefault());
 
 function setupPost () {
   composer.addPass(new EffectComposer.RenderPass(scene, camera));
@@ -115,6 +117,7 @@ function resize () {
   targets.forEach(t => {
     t.setSize(width, height);
   });
+  geo.resize(width, height);
 }
 
 function render (dt) {
@@ -132,10 +135,12 @@ function render (dt) {
     }
   });
 
-  renderer.setRenderTarget(null);
-  scene.overrideMaterial = null;
+  renderer.autoClear = false;
+  renderer.clear();
   if (composer.passes.length > 1) composer.render();
   else renderer.render(scene, camera);
+  renderer.setRenderTarget(null);
+  renderer.render(geo.uiScene, geo.uiCamera, undefined, false);
 }
 
 function setupScene ({ palettes }) {
@@ -143,17 +148,29 @@ function setupScene ({ palettes }) {
 
   // console.log('Total palettes', palettes.length);
   const audio = createAudio();
-  const onHotspotDown = () => {
-    audio.effect = 1;
+  let geo;
+
+  const onHotspotDown = (hotspot) => {
+    if (hotspot.effect === 'reverb') {
+      audio.effect = 1;
+    } else if (hotspot.effect === 'playbackRate') {
+      audio.playbackRate = 0.75;
+      geo.globalSpeed = 0.25;
+    }
   };
-  const onHotspotUp = () => {
-    audio.effect = 0;
+  const onHotspotUp = (hotspot) => {
+    if (hotspot.effect === 'reverb') {
+      audio.effect = 0;
+    } else if (hotspot.effect === 'playbackRate') {
+      audio.playbackRate = 1;
+      geo.globalSpeed = 1;
+    }
   };
 
-  const whitePalette = [ '#fff', '#d3d3d3', '#a5a5a5' ];
+  const whitePalette = [ '#fff', 'hsl(0, 0%, 80%)', 'hsl(0, 0%, 70%)' ];
   const background = whitePalette.shift();
 
-  const geo = createScene({
+  geo = createScene({
     palettes,
     scene,
     whitePalette,
@@ -161,29 +178,20 @@ function setupScene ({ palettes }) {
     camera,
     renderer,
     onHotspotUp,
-    onHotspotDown
+    onHotspotDown,
   });
 
-  let started = false;
+  audio.skip();
+  audio.queue();
+  audio.playQueued();
 
-  if (isMobile) {
-    audio.skip();
-  } else {
-    audio.queue();
-    audio.once('ready', () => {
-      audio.playQueued();
-    });
-  }
-
-  started = true;
   renderer.setClearColor(new THREE.Color(background), 1);
   document.body.style.background = background;
 
   loop.on('tick', dt => {
     time += dt;
-    if (!started) return;
-
     audio.update(dt);
+    geo.update(dt, audio.beats);
 
     // for (let i = 0; i < audio.beats.length; i++) {
     //   if (readyForGeometry[i] && audio.beats[i]) {
@@ -196,6 +204,8 @@ function setupScene ({ palettes }) {
     //   readyForPaletteChange = false;
     // }
   });
+
+  return geo;
 }
 
 function helloWorld () {
