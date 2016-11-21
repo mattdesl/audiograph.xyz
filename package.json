@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A visual exploration of sound.",
   "main": "index.js",
-  "license": "MIT",
+  "license": "CC-BY-NC-SA-4.0",
   "author": {
     "name": "Matt DesLauriers",
     "email": "dave.des@gmail.com",
