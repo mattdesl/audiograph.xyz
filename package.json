@@ -57,7 +57,8 @@
     "test": "node test.js",
     "start": "budo index.js:bundle.js --live -- -t babelify -t glslify -t brfs -t [ installify --save ]",
     "build": "browserify index.js -t babelify -t glslify -t brfs | uglifyjs -m -c warnings=false > bundle.js",
-    "deploy": "surge -p ."
+    "deploy": "npm run build && npm run deploy:upload",
+    "deploy:upload": "surge -p ."
   },
   "keywords": [],
   "repository": {
