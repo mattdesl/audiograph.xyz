@@ -4,6 +4,7 @@ const newArray = require('new-array');
 const geoScene = require('./lib/geoScene');
 const getPalette = require('./lib/palette');
 const rightNow = require('right-now');
+const randomFloat = require('random-float');
 const setupInteractions = require('./lib/setupInteractions');
 const log = require('./lib/log');
 
@@ -180,7 +181,11 @@ function setupScene ({ palettes, envMap }) {
   const whitePalette = [ '#fff', '#d3d3d3', '#a5a5a5' ];
   const interactions = setupInteractions({ whitePalette, scene, controls, audio, camera, geo });
 
+  let hasNextGeometry = false;
+  let hasNextPalette = false;
+  let ignorePaletteSwap = false;
   const introAutoGeo = setInterval(() => {
+    hasNextGeometry = true;
     geo.nextGeometry();
   }, 400);
 
@@ -198,15 +203,21 @@ function setupScene ({ palettes, envMap }) {
   interactions.once('stop', (isLoaded) => {
     // every time we release spacebar, we reset the counter here
     interactions.on('stop', () => {
+      ignorePaletteSwap = false;
+      hasNextPalette = true;
       resetPaletteSwapping();
       readyForPaletteChange = false;
     });
+    interactions.on('start', () => {
+      ignorePaletteSwap = true;
+    })
 
     let firstSwapTimeout = null;
     const onAudioPlaying = () => {
       const firstSwapDelay = 7721;
       firstSwapTimeout = setTimeout(() => {
         firstSwap();
+        randomPaletteInterval();
       }, firstSwapDelay);
     };
     if (!isLoaded) audio.once('ready', onAudioPlaying);
@@ -216,9 +227,34 @@ function setupScene ({ palettes, envMap }) {
     });
   });
 
+  const randomGeoInterval = () => {
+    hasNextGeometry = false;
+    setTimeout(() => {
+      if (!hasNextGeometry) {
+        hasNextGeometry = true;
+        // fake data for iOS
+        geo.nextGeometry();
+      }
+      randomGeoInterval();
+    }, randomFloat(500, 2000));
+  };
+
+  const randomPaletteInterval = () => {
+    hasNextPalette = false;
+    setTimeout(() => {
+      if (!hasNextPalette && !ignorePaletteSwap) {
+        hasNextPalette = true;
+        // fake data for iOS
+        geo.nextPalette();
+      }
+      randomPaletteInterval();
+    }, randomFloat(4000, 8000));
+  };
+
   showIntro({ interactions }, () => {
     started = true;
     clearInterval(introAutoGeo);
+    randomGeoInterval();
   });
 
   setInterval(() => {
@@ -235,11 +271,13 @@ function setupScene ({ palettes, envMap }) {
 
     for (let i = 0; i < audio.beats.length; i++) {
       if (readyForGeometry[i] && audio.beats[i]) {
+        hasNextGeometry = true;
         geo.nextGeometry({ type: i });
         readyForGeometry[i] = false;
       }
     }
     if (!interactions.keyDown && readyForPaletteChange && audio.beats[1] && switchPalettes) {
+      hasNextPalette = true;
       geo.nextPalette();
       readyForPaletteChange = false;
     }
