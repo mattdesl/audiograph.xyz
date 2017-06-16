@@ -198,6 +198,17 @@ function setupScene ({ palettes, envMap }) {
     });
   }
 
+  const randomPaletteInterval = () => {
+    hasNextPalette = false;
+    setTimeout(() => {
+      if (!hasNextPalette && !ignorePaletteSwap) {
+        hasNextPalette = true;
+        // fake data for iOS
+        geo.nextPalette();
+      }
+      randomPaletteInterval();
+    }, randomFloat(4000, 8000));
+  };
 
   // handle slow internet on first track
   interactions.once('stop', (isLoaded) => {
@@ -237,18 +248,6 @@ function setupScene ({ palettes, envMap }) {
       }
       randomGeoInterval();
     }, randomFloat(500, 2000));
-  };
-
-  const randomPaletteInterval = () => {
-    hasNextPalette = false;
-    setTimeout(() => {
-      if (!hasNextPalette && !ignorePaletteSwap) {
-        hasNextPalette = true;
-        // fake data for iOS
-        geo.nextPalette();
-      }
-      randomPaletteInterval();
-    }, randomFloat(4000, 8000));
   };
 
   showIntro({ interactions }, () => {
