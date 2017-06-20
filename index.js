@@ -1,3 +1,7 @@
+require('seed-random')('1', {
+  global: true
+});
+
 const createLoop = require('raf-loop');
 const createApp = require('./lib/app');
 const newArray = require('new-array');
@@ -9,7 +13,7 @@ const setupInteractions = require('./lib/setupInteractions');
 const log = require('./lib/log');
 
 const isMobile = require('./lib/isMobile');
-const showIntro = require('./lib/intro');
+const createIntro = require('./lib/intro');
 const EffectComposer = require('./lib/EffectComposer');
 const BloomPass = require('./lib/BloomPass');
 const SSAOShader = require('./lib/shader/SSAOShader');
@@ -58,30 +62,13 @@ const loop = createLoop(render).start();
 resize();
 window.addEventListener('resize', resize);
 window.addEventListener('touchstart', ev => ev.preventDefault());
-helloWorld();
-
-// ensure we are at top on iPhone in landscape
-const isIOS = /(iPhone|iPad)/i.test(navigator.userAgent);
-if (isIOS) {
-  const fixScroll = () => {
-    setTimeout(() => {
-      window.scrollTo(0, 1);
-    }, 500);
-  };
-
-  fixScroll();
-  window.addEventListener('orientationchange', () => {
-    fixScroll();
-  }, false);
-}
 
 window.onkeydown = function (e) { 
   if (e.keyCode === 32) return false;
 };
-setupPost();
 
-const supportsMedia = !isIOS;
-setupScene({ palettes: getPalette(), supportsMedia });
+setupPost();
+setupScene({ palettes: getPalette() });
 
 function setupPost () {
   composer.addPass(new EffectComposer.RenderPass(scene, camera));
@@ -160,143 +147,122 @@ function render (dt) {
   else renderer.render(scene, camera);
 }
 
-function setupScene ({ palettes, envMap }) {
+function setupScene ({ palettes }) {
   document.querySelector('#canvas').style.display = 'block';
 
   // console.log('Total palettes', palettes.length);
-  const geo = geoScene({ palettes, scene, envMap, loop, camera, renderer });
+  const geo = geoScene({ palettes, scene, loop, camera, renderer });
 
   const initialPalette = [ '#fff', '#e2e2e2' ];
   geo.setPalette(initialPalette);
   document.body.style.background = '#F9F9F9';
 
   const audio = createAudio();
-  let started = false;
-  let time = 0;
-  let switchPalettes = false;
-  let readyForGeometry = newArray(audio.binCount, true);
-  let readyForPaletteChange = false;
-  let paletteInterval;
 
   const whitePalette = [ '#fff', '#d3d3d3', '#a5a5a5' ];
   const interactions = setupInteractions({ whitePalette, scene, controls, audio, camera, geo });
 
-  let hasNextGeometry = false;
-  let hasNextPalette = false;
-  let ignorePaletteSwap = false;
-  const introAutoGeo = setInterval(() => {
-    hasNextGeometry = true;
+  audio.queue();
+  audio.once('ready', () => {
+    audio.playQueued();
+  });
+
+  const timeline = createAudioTimeline();
+
+  const intro = createIntro();
+  intro.animateIn();
+  interactions.enable();
+
+  // First interaction
+  interactions.once('start', () => {
+    intro.animateOut();
     geo.nextGeometry();
-  }, 400);
-
-  if (isMobile) {
-    audio.skip();
-  } else {
-    audio.queue();
-    audio.once('ready', () => {
-      audio.playQueued();
-    });
-  }
-
-  const randomPaletteInterval = () => {
-    hasNextPalette = false;
-    setTimeout(() => {
-      if (!hasNextPalette && !ignorePaletteSwap) {
-        hasNextPalette = true;
-        // fake data for iOS
-        geo.nextPalette();
-      }
-      randomPaletteInterval();
-    }, randomFloat(4000, 8000));
-  };
-
-  // handle slow internet on first track
-  interactions.once('stop', (isLoaded) => {
-    // every time we release spacebar, we reset the counter here
-    interactions.on('stop', () => {
-      ignorePaletteSwap = false;
-      hasNextPalette = true;
-      resetPaletteSwapping();
-      readyForPaletteChange = false;
-    });
-    interactions.on('start', () => {
-      ignorePaletteSwap = true;
-    })
-
-    let firstSwapTimeout = null;
-    const onAudioPlaying = () => {
-      const firstSwapDelay = 7721;
-      firstSwapTimeout = setTimeout(() => {
-        firstSwap();
-        randomPaletteInterval();
-      }, firstSwapDelay);
-    };
-    if (!isLoaded) audio.once('ready', onAudioPlaying);
-    else onAudioPlaying();
-    interactions.once('start', () => {
-      if (firstSwapTimeout) clearTimeout(firstSwapTimeout);
+    interactions.once('stop', () => {
+      geo.clearGeometry();
+      for (let i = 0; i < 10; i++) geo.nextGeometry();
+      interactions.disable();
     });
   });
 
-  const randomGeoInterval = () => {
-    hasNextGeometry = false;
-    setTimeout(() => {
-      if (!hasNextGeometry) {
-        hasNextGeometry = true;
-        // fake data for iOS
-        geo.nextGeometry();
-      }
-      randomGeoInterval();
-    }, randomFloat(500, 2000));
-  };
-
-  showIntro({ interactions }, () => {
-    started = true;
-    clearInterval(introAutoGeo);
-    randomGeoInterval();
+  // Repeated interaction
+  interactions.on('start', () => {
+  });
+  interactions.on('stop', () => {
   });
 
-  setInterval(() => {
-    for (let i = 0; i < readyForGeometry.length; i++) {
-      readyForGeometry[i] = true;
-    }
-  }, 100);
+  let prevTime = rightNow();
 
-  loop.on('tick', dt => {
-    time += dt;
-    if (!started) return;
+  // setInterval(() => {
+  //   geo.nextGeometry();
+  // }, 1000);
 
+  loop.on('tick', () => {
+    const now = rightNow();
+    const dt = now - prevTime;
+    prevTime = now;
     audio.update(dt);
 
-    for (let i = 0; i < audio.beats.length; i++) {
-      if (readyForGeometry[i] && audio.beats[i]) {
-        hasNextGeometry = true;
-        geo.nextGeometry({ type: i });
-        readyForGeometry[i] = false;
-      }
-    }
-    if (!interactions.keyDown && readyForPaletteChange && audio.beats[1] && switchPalettes) {
-      hasNextPalette = true;
-      geo.nextPalette();
-      readyForPaletteChange = false;
-    }
+    const currentTrack = audio.getCurrentTrackIndex();
+    const currentTime = audio.getCurrentTime();
+    const audioTimeline = timeline[currentTrack];
+    syncToTimeline(currentTime, audioTimeline);
   });
 
-  function firstSwap () {
-    switchPalettes = true;
-    geo.nextPalette();
-    resetPaletteSwapping();
-  }
-  
-  function resetPaletteSwapping () {
-    readyForPaletteChange = false;
-    if (paletteInterval) clearInterval(paletteInterval);
-    paletteInterval = setInterval(() => {
-      readyForPaletteChange = true;
-    }, 2000);
-  }
-}
+  function syncToTimeline (currentTime, audioTimeline) {
+    if (!audioTimeline) return;
+    const list = audioTimeline.events;
+    if (list) {
+      for (let i = 0; i < list.length; i++) {
+        const ev = list[i];
+        if (ev.hit) continue;
+        if (currentTime >= ev.time) {
+          ev.hit = true;
+          ev.trigger();
+        }
+      }
+    }
 
-function helloWorld () {
-  log.intro();
+    if (audioTimeline.beats) {
+      if (typeof audioTimeline._beatCount !== 'number') {
+        audioTimeline._beatCount = 0;
+      }
+      if (audioTimeline._beatCount === 0 && currentTime >= audioTimeline.beatStart) {
+        audioTimeline._beatCount++;
+      }
+
+      const beatTime = audioTimeline._beatCount * audioTimeline.beatInterval;
+      
+      if (currentTime >= beatTime && audioTimeline._beatCount > 0) {
+        audioTimeline._beatCount++;
+        audioTimeline.beatTrigger();
+      }
+    }
+  }
+
+  function createAudioTimeline () {
+    const nextPalette = () => geo.nextPalette();
+    const nextGeometry = () => geo.nextGeometry();
+    const nextBoth = () => {
+      nextPalette();
+      nextGeometry();
+    };
+
+    const beTheLight = [
+      // main swaps
+      { time: 7.74, trigger: nextBoth },
+      { time: 30.32, trigger: nextBoth },
+      { time: 52.917, trigger: nextBoth },
+    ];
+    return [
+      { // intro track
+      },
+      { // now be the light
+        events: beTheLight,
+        beats: true,
+        beatInterval: 1.427,
+        beatStart: 1.427,
+        beatTrigger: nextGeometry
+      }
+    ];
+  }
 }

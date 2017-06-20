@@ -5,6 +5,8 @@ uniform sampler2D tDiffuse;
 uniform sampler2D tBloomDiffuse;
 uniform vec2 resolution;
 
+#pragma glslify: PI = require('glsl-pi');
+
 void main () {
   vec4 blurred = texture2D(tBloomDiffuse, vUv);
   blurred.rgb *= 0.5;
