@@ -9,7 +9,7 @@ const rightNow = require('right-now');
 const randomFloat = require('random-float');
 const setupInteractions = require('./lib/setupInteractions');
 const log = require('./lib/log');
-const clipboard = require('clipboard-copy');
+// const clipboard = require('clipboard-copy');
 
 const isMobile = require('./lib/isMobile');
 const showIntro = require('./lib/intro');
