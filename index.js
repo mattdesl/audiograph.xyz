@@ -1,12 +1,15 @@
+require('seed-random')('12', { global: true });
+
 const createLoop = require('raf-loop');
 const createApp = require('./lib/app');
 const newArray = require('new-array');
 const geoScene = require('./lib/geoScene');
-const getPalette = require('./lib/palette');
+const paletteLib = require('./lib/palette');
 const rightNow = require('right-now');
 const randomFloat = require('random-float');
 const setupInteractions = require('./lib/setupInteractions');
 const log = require('./lib/log');
+const clipboard = require('clipboard-copy');
 
 const isMobile = require('./lib/isMobile');
 const showIntro = require('./lib/intro');
@@ -81,7 +84,7 @@ window.onkeydown = function (e) {
 setupPost();
 
 const supportsMedia = !isIOS;
-setupScene({ palettes: getPalette(), supportsMedia });
+setupScene({ supportsMedia });
 
 function setupPost () {
   composer.addPass(new EffectComposer.RenderPass(scene, camera));
@@ -160,11 +163,12 @@ function render (dt) {
   else renderer.render(scene, camera);
 }
 
-function setupScene ({ palettes, envMap }) {
+function setupScene (opt = {}) {
   document.querySelector('#canvas').style.display = 'block';
 
   // console.log('Total palettes', palettes.length);
-  const geo = geoScene({ palettes, scene, envMap, loop, camera, renderer });
+  const palettes = paletteLib.getAllPalettes();
+  const geo = geoScene({ palettes, scene, loop, camera, renderer });
 
   const initialPalette = [ '#fff', '#e2e2e2' ];
   geo.setPalette(initialPalette);
@@ -237,6 +241,24 @@ function setupScene ({ palettes, envMap }) {
       if (firstSwapTimeout) clearTimeout(firstSwapTimeout);
     });
   });
+
+  let isFirstStop = true;
+  interactions.on('stop', () => {
+    if (isFirstStop) console.log('first stop');
+    else console.log('next stop');
+    geo.nextPalette();
+    // geo.setPalette(paletteLib.getSwapPalette());
+    isFirstStop = false;
+  });
+
+  // interactions.on('stop', () => {
+  //   // geo.clearGeometry();
+  //   const palette = paletteLib.random();
+  //   console.log(palette)
+  //   geo.setPalette(palette)
+  //   for (let i = 0; i < 1; i++) geo.nextGeometry()
+  //   clipboard(JSON.stringify(palette));
+  // })
 
   const randomGeoInterval = () => {
     hasNextGeometry = false;

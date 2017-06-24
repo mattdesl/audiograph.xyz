@@ -10,11 +10,13 @@
     "url": "https://github.com/mattdesl"
   },
   "dependencies": {
+    "array-combos": "^1.0.0",
     "array-shuffle": "^1.0.0",
     "audio-frequency-to-index": "^2.0.0",
     "beats": "0.0.0",
     "brfs": "^1.4.3",
     "clamp": "^1.0.1",
+    "clipboard-copy": "^1.2.0",
     "dom-css": "^2.0.0",
     "geo-arc": "^1.1.2",
     "geo-piecering": "^1.0.2",
@@ -36,6 +38,7 @@
     "raf-loop": "^1.1.3",
     "random-float": "^1.0.0",
     "right-now": "^1.0.0",
+    "seed-random": "^2.2.0",
     "soundbank-reverb": "^1.1.2",
     "three-copyshader": "0.0.1",
     "three-effectcomposer": "0.0.1",
@@ -55,7 +58,7 @@
   },
   "scripts": {
     "test": "node test.js",
-    "start": "budo index.js:bundle.js --live -- -t babelify -t glslify -t brfs -t [ installify --save ]",
+    "start": "budo index.js:bundle.js --live -- -t babelify -t glslify -t brfs",
     "build": "browserify index.js -t babelify -t glslify -t brfs | uglifyjs -m -c warnings=false > bundle.js",
     "deploy": "npm run build && npm run deploy:upload",
     "deploy:upload": "surge -p ."
