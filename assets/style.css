@@ -271,6 +271,24 @@ a:hover::after {
                                   not supported by any browser */
 }
 
+.hide-cursor {
+  cursor: none;
+}
+.clickable {
+  cursor: pointer;
+}
+.grab {
+  cursor: -webkit-grab;
+  cursor: -moz-grab;
+}
+.grabbing {
+  cursor: -webkit-grabbing;
+  cursor: -moz-grabbing; 
+}
+.hide-cursor {
+  cursor: none;
+}
+
 .intro-1a, .intro-1b, .intro-2, .intro-3 {
   display: none;
 }

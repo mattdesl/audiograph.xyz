@@ -242,6 +242,25 @@ function setupScene (opt = {}) {
     });
   });
 
+  let mouseTimer = null;
+  document.body.classList.remove('hide-cursor');
+  const hideCursor = () => {
+    document.body.classList.add('hide-cursor');
+  };
+  const resetHideCursorTimer = () => {
+    if (mouseTimer) clearTimeout(mouseTimer);
+    mouseTimer = setTimeout(hideCursor, 1000);
+  };
+  const resetCursor = () => {
+    document.body.classList.remove('hide-cursor');
+  };
+  window.addEventListener('mousemove', () => {
+    resetHideCursorTimer();
+    resetCursor();
+  });
+  hideCursor();
+
+  // palette coloring
   let isFirstStop = true;
   interactions.on('stop', () => {
     if (isFirstStop) console.log('first stop');
