@@ -189,14 +189,14 @@ function setupScene ({ palettes, envMap }) {
     geo.nextGeometry();
   }, 400);
 
-  if (isMobile) {
+  // if (isMobile) {
     audio.skip();
-  } else {
-    audio.queue();
-    audio.once('ready', () => {
-      audio.playQueued();
-    });
-  }
+  // } else {
+  //   audio.queue();
+  //   audio.once('ready', () => {
+  //     audio.playQueued();
+  //   });
+  // }
 
   const randomPaletteInterval = () => {
     hasNextPalette = false;
