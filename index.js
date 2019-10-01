@@ -81,7 +81,11 @@ window.onkeydown = function (e) {
 setupPost();
 
 const supportsMedia = !isIOS;
-setupScene({ palettes: getPalette(), supportsMedia });
+const enableAudioButton = document.getElementById('enable-audio');
+enableAudioButton.onclick = () => {
+  setupScene({ palettes: getPalette(), supportsMedia });
+  enableAudioButton.style.display = 'none';
+};
 
 function setupPost () {
   composer.addPass(new EffectComposer.RenderPass(scene, camera));
@@ -189,14 +193,14 @@ function setupScene ({ palettes, envMap }) {
     geo.nextGeometry();
   }, 400);
 
-  // if (isMobile) {
+  if (isMobile) {
     audio.skip();
-  // } else {
-  //   audio.queue();
-  //   audio.once('ready', () => {
-  //     audio.playQueued();
-  //   });
-  // }
+  } else {
+    audio.queue();
+    audio.once('ready', () => {
+      audio.playQueued();
+    });
+  }
 
   const randomPaletteInterval = () => {
     hasNextPalette = false;
